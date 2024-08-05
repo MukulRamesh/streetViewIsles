@@ -1,15 +1,15 @@
 import urllib.parse
-from PIL import Image
+from tkinter import *
+from PIL import Image, ImageTk
 import requests
 from io import BytesIO
-import json
-
+import os
 
 searchLoc = "18 CLARK ST Trenton"
 
 safeLoc = urllib.parse.quote_plus(searchLoc)
 
-size = "6000x3000" #this just returns a nice quality image. the actual test
+size = "640x640" #this is the best quality image they have
 
 location = safeLoc
 with open("key.txt", 'r') as file:
@@ -28,7 +28,13 @@ if (metaJSON['status'] != 'OK'):
 else:
 	date = metaJSON.get("date")
 	response = requests.get(url)
-	img = Image.open(BytesIO(response.content))
+	imgObj = Image.open(BytesIO(response.content))
 
 	print(date)
-	img.save("./output.png")
+
+
+root = Tk()
+img = ImageTk.PhotoImage(imgObj)
+panel = Label(root, image = img)
+panel.pack(side = "bottom", fill = "both", expand = "yes")
+root.mainloop()
