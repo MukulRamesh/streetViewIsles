@@ -9,7 +9,7 @@ searchLoc = "18 CLARK ST Trenton"
 
 safeLoc = urllib.parse.quote_plus(searchLoc)
 
-size = "6000x3000" #this just returns a nice quality image. the actual 
+size = "6000x3000" #this just returns a nice quality image. the actual test
 
 location = safeLoc
 with open("key.txt", 'r') as file:
