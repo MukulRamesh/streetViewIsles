@@ -16,6 +16,12 @@ def getAddress():
 def getLabel():
     return df.iloc[currentIndex]["parc_type2019"]
 
+def getIndex():
+    return currentIndex
+
+def getTotalRecords():
+    return len(df.index)
+
 def incrementIndex():
     global currentIndex
     currentIndex += 1

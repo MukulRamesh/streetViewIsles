@@ -24,7 +24,7 @@ label = ttk.Label(root,
 label.pack(side = "bottom", fill="both", expand=True, padx=10, pady=10)
 
 def setLabelText():
-	LabelText.set(f"{spreadsheet.getLabel()} :: {spreadsheet.getAddress()}")
+	LabelText.set(f"{spreadsheet.getLabel()} :: {spreadsheet.getAddress()} :: {spreadsheet.getIndex()}/{spreadsheet.getTotalRecords()}")
 
 
 imgObj = Image.open("loading.jpg")
