@@ -8,23 +8,48 @@ import getImage
 import spreadsheet
 
 root = tk.Tk()
+root.title("Streetview Label Utility - Mukul Ramesh")
 
-
-label = ttk.Label(root, text="""
+infoLabel = ttk.Label(root, text="""
 Keyboard support:
 Press "Space" to confirm that the label (near the bottom) is correct: Use the "Up" or "Down" arrow keys to select a new label if not.
-Press "Enter" to move to the next image. Press "Esc" to back to the previous image.""", font=('Helvetica', '12'))
-label.pack(ipadx=10, ipady=10)
+Press "Esc" if the image is obscured in some way (for example, the plot is blurred, a tree is in the way, etc)
+Press "Right Arrow" to move to the next image. Press "Left Arrow" to back to the previous image.""", font=('Helvetica', '12'))
+infoLabel.pack(ipadx=10, ipady=10)
 
-LabelText = tk.StringVar()
-LabelText.set('[SAMPLE TEXT]')
 
-label = ttk.Label(root,
-                    textvar=LabelText, padding=10, relief="solid", font=('Helvetica', '15', 'bold'))
-label.pack(side = "bottom", fill="both", expand=True, padx=10, pady=10)
 
-def setLabelText():
-	LabelText.set(f"{spreadsheet.getLabel()} :: {spreadsheet.getAddress()} :: {spreadsheet.getIndex()}/{spreadsheet.getTotalRecords()}")
+
+
+LabelOptions = ["OCCUPIED BUILDING","VACANT LOT","VACANT BUILDING","LOT","PARK / OPEN SPACE","PARKING LOT","UTILITY / RAIL","VACANT STOREFRONT"]
+SelectedLabelOption = tk.IntVar(root, 0)
+LabelOptionsText = tk.StringVar(root, LabelOptions[SelectedLabelOption.get()])
+LabelOptionsDropDown = tk.OptionMenu(root, LabelOptionsText, *LabelOptions)
+LabelOptionsDropDown.pack()
+
+def moveLabelOptionDown():
+	curLabelNum = SelectedLabelOption.get()
+	if (curLabelNum < len(LabelOptions) - 1):
+		curLabelNum += 1
+		SelectedLabelOption.set(curLabelNum)
+		LabelOptionsText.set(LabelOptions[curLabelNum])
+
+
+def moveLabelOptionUp():
+	curLabelNum = SelectedLabelOption.get()
+	if (curLabelNum > 0):
+		curLabelNum -= 1
+		SelectedLabelOption.set(curLabelNum)
+		LabelOptionsText.set(LabelOptions[curLabelNum])
+
+
+ExcelLabelText = tk.StringVar()
+ExcelLabelText.set('[SAMPLE TEXT]')
+excelLabel = ttk.Label(root,
+                    textvar=ExcelLabelText, padding=10, relief="solid", font=('Helvetica', '15', 'bold'))
+excelLabel.pack(side = "bottom", fill="both", expand=True, padx=10, pady=10)
+def setExcelLabelText():
+	ExcelLabelText.set(f"{spreadsheet.getLabel()} :: {spreadsheet.getAddress()} :: {spreadsheet.getIndex()}/{spreadsheet.getTotalRecords()}")
 
 
 imgObj = Image.open("loading.jpg")
@@ -53,7 +78,7 @@ def nextEntry():
 		spreadsheet.incrementIndex()
 		image = getImage.getImage(spreadsheet.getAddress())
 
-	setLabelText()
+	setExcelLabelText()
 	setImage(BytesIO(image))
 
 nextEntry() # Initialize the first image
@@ -68,7 +93,7 @@ def prevEntry():
 		spreadsheet.decrementIndex()
 		image = getImage.getImage(spreadsheet.getAddress())
 
-	setLabelText()
+	setExcelLabelText()
 	setImage(BytesIO(getImage.getImage(spreadsheet.getAddress())))
 
 confTKVar = tk.BooleanVar()
@@ -86,8 +111,13 @@ ttk.Checkbutton(root,
 				offvalue=False).pack()
 
 keyboard.add_hotkey('space', switchConfirmationVar)
-keyboard.add_hotkey('enter', nextEntry)
-keyboard.add_hotkey('escape', prevEntry)
+
+keyboard.add_hotkey('up', moveLabelOptionUp)
+keyboard.add_hotkey('down', moveLabelOptionDown)
+
+
+keyboard.add_hotkey('right', nextEntry)
+keyboard.add_hotkey('left', prevEntry)
 
 
 root.mainloop()
